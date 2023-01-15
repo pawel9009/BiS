@@ -1,0 +1,74 @@
+
+create or replace PROCEDURE dodaj_wiersz2 (job_id IN CHAR,job_title IN CHAR ) IS
+
+BEGIN
+	INSERT INTO jobs (JOB_ID,JOB_TITLE) VALUES (job_id, job_title);
+EXCEPTION
+WHEN OTHERS THEN
+dbms_output.put_line('blad');
+END;
+
+
+create or replace PROCEDURE zmien_tytul (jobid IN CHAR,job_tit IN CHAR ) IS
+BEGIN
+UPDATE jobs
+	SET job_title = job_tit
+	WHERE job_id = jobid;
+EXCEPTION
+WHEN DUP_VAL_ON_INDEX
+ THEN
+dbms_output.put_line('zly id');   
+END;
+
+
+
+create or replace PROCEDURE usun_wiersz (jobid IN CHAR) IS
+BEGIN
+    DELETE
+    FROM
+        jobs
+    WHERE
+        job_id = jobid;
+EXCEPTION
+WHEN NO_DATA_FOUND THEN 
+        dbms_output.put_line('File has no data');
+END;
+
+
+create or replace PROCEDURE zarobki (id_emp IN CHAR) IS
+f_name employees.last_name%TYPE;
+salar employees.salary%TYPE;
+
+BEGIN
+    SELECT first_name, salary
+    INTO f_name,salar
+    FROM
+        employees
+    WHERE
+        employee_id = id_emp;
+EXCEPTION
+WHEN NO_DATA_FOUND THEN 
+        dbms_output.put_line('blad');
+END;
+
+BEGIN
+zarobki(111);
+end;
+
+
+
+
+
+create or replace PROCEDURE dodaj_pr (id_emp IN NUMBER, f_n IN CHAR, l_n IN CHAR,email IN CHAR, hire IN DATE, j_id IN CHAR, sal IN INT ) IS
+BEGIN
+
+INSERT INTO employees (EMPLOYEE_ID ,first_name, last_name, email, hire_date, job_id)
+VALUES (id_emp, f_n,l_n,  email, hire,j_id);
+EXCEPTION
+WHEN NO_DATA_FOUND THEN 
+        dbms_output.put_line('blad');
+END;
+
+BEGIN
+dodaj_pr(343,'aa', 'bb', 'mail@wp.pl', '06/07/12', 'PU_CLERK', 4323);
+end;
