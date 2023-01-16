@@ -1,0 +1,83 @@
+CREATE OR REPLACE FUNCTION fun1(id_job VARCHAR)
+RETURN VARCHAR IS
+    job_tit jobs.job_title%TYPE;
+BEGIN
+    SELECT job_title INTO job_tit
+    FROM jobs 
+    WHERE job_id = id_job;
+RETURN job_tit;
+    EXCEPTION WHEN NO_DATA_FOUND 
+    THEN RETURN 'No data found';
+END fun1;
+
+BEGIN
+    DBMS_OUTPUT.PUT_LINE(fun1('ST_MAN'));
+END;
+
+----------------------------------------------------
+
+
+CREATE OR REPLACE FUNCTION fun2(id_job NUMBER)
+RETURN NUMBER IS
+    emp_salary NUMBER(6);
+BEGIN
+    SELECT salary*(12 + commission_pct) INTO emp_salary
+    FROM employees 
+    WHERE EMPLOYEE_ID = id_job;
+RETURN emp_salary;
+    EXCEPTION WHEN OTHERS 
+    THEN RETURN 'Blad';
+END fun2;
+
+BEGIN
+    DBMS_OUTPUT.PUT_LINE(fun2(165));
+END;
+
+----------------------------------------------------
+CREATE OR REPLACE FUNCTION fun3(numer IN VARCHAR2)
+RETURN VARCHAR2 AS
+wynik VARCHAR2(6);
+BEGIN
+wynik := SUBSTR(numer, 1, 3);
+
+RETURN wynik;
+    EXCEPTION WHEN OTHERS 
+    THEN RETURN 'Blad';
+END fun3;
+
+BEGIN
+    DBMS_OUTPUT.PUT_LINE(fun3('+48111222333'));
+END;
+-----------------------------------------------------
+CREATE OR REPLACE FUNCTION fun4(napis IN VARCHAR2)
+RETURN VARCHAR2 AS
+wynik VARCHAR2(10);
+BEGIN
+SELECT INITCAP(napis) Into wynik FROM DUAL;
+wynik := INITCAP(SUBSTR(wynik,1, LENGTH(wynik)-1))|| UPPER(SUBSTR(wynik,LENGTH(wynik)));
+
+RETURN wynik;
+    EXCEPTION WHEN OTHERS 
+    THEN RETURN 'Blad';
+END fun4;
+
+BEGIN
+    DBMS_OUTPUT.PUT_LINE(fun4('hello'));
+END;
+-------------------------------------------------------
+CREATE OR REPLACE FUNCTION fun5(pesel IN VARCHAR2)
+RETURN VARCHAR2 AS
+wynik VARCHAR2(10);
+BEGIN
+wynik := '19'|| SUBSTR(pesel,1,2)|| '-'||SUBSTR(pesel,3,2)||'-'||SUBSTR(pesel,5,2);
+
+RETURN wynik;
+    EXCEPTION WHEN OTHERS 
+    THEN RETURN 'Blad';
+END fun5;
+
+BEGIN
+    DBMS_OUTPUT.PUT_LINE(fun5('99061167777'));
+END;
+--------------------------------------------------------
+
