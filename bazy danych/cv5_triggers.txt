@@ -1,0 +1,86 @@
+CREATE TABLE archiwum_departamentów 
+(archiwum_id INT,
+nazwa VARCHAR(50),
+data_zamkniecia DATE,
+ostatni_manager VARCHAR(100));
+
+
+CREATE OR REPLACE TRIGGER dodaj_do_archiwum
+AFTER DELETE ON departments
+FOR EACH ROW DECLARE PRAGMA AUTONOMOUS_TRANSACTION;
+    imie VARCHAR2(100);
+    nazwisko varchar2(100);
+    ostatni_manager varchar2(100);
+BEGIN
+    SELECT first_name,last_name INTO imie,nazwisko
+        FROM employees WHERE employee_id = :OLD.manager_id;
+            ostatni_manager:= imie||' ' || nazwisko;
+    
+    INSERT INTO archiwum_departamentów (archiwum_id, nazwa, data_zamkniecia,ostatni_manager)
+    
+    VALUES(:OLD.DEPARTMENT_ID, :OLD.DEPARTMENT_NAME, SYSDATE, ostatni_manager);
+    COMMIT;
+END;
+
+DELETE FROM departments WHERE department_id = 110;
+------------------------------------------------------------------
+CREATE TABLE zlodziej 
+(
+uzytkownik VARCHAR2(110),
+czas_zmiany TIMESTAMP
+);
+
+CREATE OR REPLACE TRIGGER uwaga_zlodziej
+BEFORE INSERT OR UPDATE of salary  ON EMPLoYEES
+FOR EACH ROW
+BEGIN
+
+    if :NEW.salary <2000 or :NEW.salary >26000 Then
+        INSERT into zlodziej (uzytkownik,czas_zmiany)values (USER, SYSTIMESTAMP); 
+       RAISE_APPLICATION_ERROR(-20000, 'Wynagrodzenie jest za niskie');
+    end if;
+       
+END;
+
+Update employees
+set salary = 167575
+where employee_id = 167;
+-------------------------------------------------------------------------
+CREATE SEQUENCE employees_sequence 
+ START WITH 1000 INCREMENT BY 1;
+
+CREATE OR REPLACE TRIGGER auto_increment_triger
+BEFORE INSERT ON employees
+FOR EACH ROW
+BEGIN
+SELECT employees_sequence.NEXTVAL
+INTO :new.employee_id
+FROM dual;
+END;
+
+BEGIN
+dodaj_pr(3456,'aa', 'bb', 'mail@wp.pl', '06/07/12', 'PU_CLERK', 44);
+end;
+------------------------------------------------------------------------
+create or replace TRIGGER zablokuj_opcje
+before UPDATE or DELETE or INSERT on JOB_GRADES
+for each row
+BEGIN
+ RAISE_APPLICATION_ERROR(-20000, 'brak dostępu');
+end;
+
+UPDATE JOB_GRADES
+set MIN_SALARY = 343423
+WHERE grade='A';
+------------------------------------------------------------
+create or replace TRIGGER zmien_min_max
+before UPDATE  on JOBS
+for each row
+BEGIN
+ :new.min_salary := :old.min_salary;
+  :new.max_salary := :old.max_salary;
+end;
+
+UPDATE JOBS
+set min_salary = 1
+WHERE job_id='AD_VP';
