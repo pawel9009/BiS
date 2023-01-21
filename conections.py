@@ -4,6 +4,7 @@ from pathlib import Path
 from db_info import *
 from sqlalchemy import create_engine
 from validation import validate_data
+from structure_data_description import statistics_description
 
 
 def connect():
@@ -20,9 +21,16 @@ def connect():
         # testowa.Otwarcie.iloc[3] = 'asdsd'
         # testowa.Data.iloc[3] = 'asdsd'
 
-        df = validate_data(testowa)
+        df = validate_data(df)
+        statystyka_odp = input('Display descriptive statistics y/n?')
+        if statystyka_odp == 'y':
+            statistics_description(df)
+
+
 
         engine = create_engine(f"postgresql://{db_info.user}:{db_info.password}@localhost/{db_info.database}")
+
+
 
         df.to_sql(
             "gold_pl",
