@@ -4,7 +4,7 @@ from pathlib import Path
 from db_info import *
 from sqlalchemy import create_engine
 from validation import validate_data
-from structure_data_description import statistics_description
+from save_selected_date import save_date
 
 
 def connect():
@@ -16,21 +16,20 @@ def connect():
         df = get_data.scrap_data()
         df.to_csv(Path('files/data.csv'), index=False)
         testowa = df.head(5)
-
         # testowa.Zamkniecie.iloc[1] = 'asdsd'
         # testowa.Otwarcie.iloc[3] = 'asdsd'
         # testowa.Data.iloc[3] = 'asdsd'
 
         df = validate_data(df)
-        statystyka_odp = input('Display descriptive statistics y/n?')
-        if statystyka_odp == 'y':
-            statistics_description(df)
-
-
+        # statystyka_odp = input('Display descriptive statistics y/n?')
+        # if statystyka_odp == 'y':
+        #     print(df.describe())
 
         engine = create_engine(f"postgresql://{db_info.user}:{db_info.password}@localhost/{db_info.database}")
 
-
+        # save_date_ans = input('Save data?')
+        # if save_date_ans == 'y':
+        save_date(df, engine)
 
         df.to_sql(
             "gold_pl",
