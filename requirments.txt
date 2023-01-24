@@ -1,6 +1,6 @@
 psycopg2==2.9.5
 pandas==1.5.2
 numpy==1.24.1
-sqlalchemy==1.4.46
+sqlalchemy<2.0
 
 

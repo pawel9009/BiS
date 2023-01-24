@@ -5,14 +5,13 @@ from db_info import *
 from sqlalchemy import create_engine
 from validation import validate_data
 from save_selected_date import save_date
+from operations import operations_loop
 
 
 def connect():
-    """ Connect to the PostgreSQL database server """
     conn = None
     try:
         conn = db_config
-
         df = get_data.scrap_data()
         df.to_csv(Path('files/data.csv'), index=False)
         testowa = df.head(5)
@@ -27,9 +26,13 @@ def connect():
 
         engine = create_engine(f"postgresql://{db_info.user}:{db_info.password}@localhost/{db_info.database}")
 
+        # operations_ansver = input('Operations? y/n?')
+        # if operations_ansver == 'y':
+        operations_loop(engine)
+
         # save_date_ans = input('Save data?')
         # if save_date_ans == 'y':
-        save_date(df, engine)
+        # save_date(df, engine)
 
         df.to_sql(
             "gold_pl",
